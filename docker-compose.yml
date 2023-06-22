@@ -1,0 +1,41 @@
+version: '3'
+services:
+  node-api:
+    container_name: API-node
+    restart: always
+    ports:
+      - 4000:4000
+    build: 
+      context: .
+      target: development
+      dockerfile: Dockerfile
+    command: npm run start:pro
+    volumes:
+      - .:/usr/src/app
+    environment:
+      NODE_ENV: production
+      POSGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSGRES_DB: coomuvemar_DB
+    depends_on:
+      - postgre-db
+    links:
+      - postgre-db
+    networks:
+      - coomuvemar
+  postgre-db:
+    image: postgres:12.9
+    ports:
+      - 5434:5432
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+      POSGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSGRES_DB: coomuvemar_DB
+    networks:
+      - coomuvemar
+networks:
+  coomuvemar:
